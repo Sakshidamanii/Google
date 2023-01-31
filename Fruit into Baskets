@@ -1,0 +1,64 @@
+class Solution {
+    public int totalFruit(int[] fruits) 
+    {
+        if(fruits.length == 1)
+            return 1;
+        
+        if(fruits.length == 2)
+            return 2;
+        
+        int[] dp = new int[fruits.length];
+        
+        dp[0] = 1;
+        dp[1] = 2;
+        
+        HashSet<Integer> set = new HashSet<>();
+        
+        set.add(fruits[0]);
+        set.add(fruits[1]);
+        
+        int newRoute = 2;
+
+        int repeat = 1;
+        
+        for(int i=2; i<fruits.length; i++)
+        {
+            if(set.size() < 2)
+            {
+                if(!set.contains(fruits[i]))
+                {
+                    set.add(fruits[i]);
+                }
+            }
+            
+            if(set.contains(fruits[i]))
+            {
+                if(fruits[i] == fruits[i-1])
+                {
+                    repeat++;
+                }
+                else
+                {
+                    repeat = 1;
+                }
+
+                newRoute++;
+                dp[i] = Math.max(dp[i-1], newRoute);
+            }
+            else
+            {
+                set.clear();
+                set.add(fruits[i-1]);
+                set.add(fruits[i]);
+                
+                newRoute = repeat + 1;
+                
+                dp[i] = Math.max(dp[i-1], newRoute);
+                repeat = 1;
+            }
+
+        }
+        
+        return dp[fruits.length-1];
+    }
+}
