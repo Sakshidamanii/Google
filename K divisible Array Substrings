@@ -1,0 +1,63 @@
+class TrieNode {
+    public int val;
+    public boolean isEnd;
+    public Map<Integer, TrieNode> children;
+    public TrieNode(int val) {
+        this.val = val;
+        this.isEnd = false;
+        this.children = new HashMap<>();
+    }
+}
+class Trie {
+    public TrieNode root;
+    public int totalCount;
+    public Trie() {
+        this.root = new TrieNode(-1);
+    }
+    public void insert(int[] nums, int left, int right) {
+        TrieNode cur = this.root;
+        for(int i = left; i <= right; i++){
+            
+            int cn = nums[i];
+            if (!cur.children.containsKey(cn)){
+                cur.children.put(cn, new TrieNode(cn));
+            }
+            cur = cur.children.get(cn);
+            if (!cur.isEnd) {
+                totalCount++;
+                cur.isEnd = true;
+            }
+        }
+    }
+    public int getCount() {
+        return totalCount;
+    }
+}
+class Solution {
+    public int countDistinct(int[] nums, int k, int p) {
+        int count = 0;
+        int n = nums.length;
+        Trie curTrie = new Trie();
+        int left = 0;
+        int right = 0;
+        while (left < n) {
+            while (right < n) {
+                if (nums[right] % p == 0) {
+                    count++;
+                }
+                if (count == k + 1) {
+                    count--;
+                    break;
+                }
+                right++;
+            }
+            curTrie.insert(nums, left, right - 1);
+            if (nums[left] % p == 0) {
+                count--;
+            }
+            left++;
+        }
+        
+        return curTrie.getCount();
+    }
+}
